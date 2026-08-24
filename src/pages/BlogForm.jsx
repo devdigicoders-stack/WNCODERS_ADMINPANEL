@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Editor } from '@tinymce/tinymce-react';
 
@@ -18,11 +18,13 @@ const BlogForm = () => {
     readTime: '5 min read', 
     image: '', 
     content: '',
-    tags: ''
+    tags: []
   });
 
+  const [tagInput, setTagInput] = useState('');
   const [categoriesList, setCategoriesList] = useState([]);
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const baseUrl = apiUrl.replace(/\/api$/, '');
 
   useEffect(() => {
     // If in edit mode, try to load data from router state
@@ -36,7 +38,7 @@ const BlogForm = () => {
         readTime: blog.readTime || '5 min read',
         image: blog.image || '',
         content: blog.content || '',
-        tags: blog.tags ? blog.tags.join(', ') : ''
+        tags: blog.tags || []
       });
     } else if (isEditMode) {
       // If no state (e.g. user refreshed the page directly on /edit/:id), they should probably go back 
@@ -66,6 +68,24 @@ const BlogForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleTagKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const newTag = tagInput.trim();
+      if (newTag && !formData.tags.includes(newTag)) {
+        setFormData(prev => ({ ...prev, tags: [...prev.tags, newTag] }));
+      }
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (indexToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter((_, index) => index !== indexToRemove)
+    }));
+  };
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -83,7 +103,7 @@ const BlogForm = () => {
       
       const result = await response.json();
       if (response.ok) {
-        setFormData(prev => ({ ...prev, image: 'http://localhost:5000' + result.image }));
+        setFormData(prev => ({ ...prev, image: baseUrl + result.image }));
         toast.success('Image uploaded successfully!');
       } else {
         toast.error(result.message || 'Image upload failed');
@@ -102,6 +122,9 @@ const BlogForm = () => {
     e.preventDefault();
     const token = localStorage.getItem('token') || '';
     
+    // Payload already has tags as an array
+    const payload = { ...formData };
+    
     try {
       if (!isEditMode) {
         const response = await fetch(`${apiUrl}/blogs`, {
@@ -110,7 +133,7 @@ const BlogForm = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(payload)
         });
         
         const result = await response.json();
@@ -127,7 +150,7 @@ const BlogForm = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(payload)
         });
         
         const result = await response.json();
@@ -194,8 +217,26 @@ const BlogForm = () => {
             <input required type="text" name="author" value={formData.author} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0ca356] focus:ring-4 focus:ring-[#0ca356]/10 transition-all text-[0.95rem]" placeholder="e.g. John Doe" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Tags (Comma Separated)</label>
-            <input type="text" name="tags" value={formData.tags} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0ca356] focus:ring-4 focus:ring-[#0ca356]/10 transition-all text-[0.95rem]" placeholder="e.g. React, UI, Web Design" />
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Tags</label>
+            <div className="w-full min-h-[50px] px-3 py-2 rounded-xl border border-slate-200 focus-within:border-[#0ca356] focus-within:ring-4 focus-within:ring-[#0ca356]/10 transition-all bg-white flex flex-wrap gap-2 items-center cursor-text" onClick={() => document.getElementById('tag-input').focus()}>
+              {formData.tags.map((tag, index) => (
+                <span key={index} className="px-3 py-1 bg-[#e8f6ee] text-[#0ca356] text-xs font-bold rounded-lg border border-[#0ca356]/20 flex items-center gap-1.5 shadow-sm">
+                  {tag}
+                  <button type="button" onClick={() => removeTag(index)} className="hover:bg-[#0ca356]/20 p-0.5 rounded-full transition-colors" title="Remove tag">
+                    <X size={12} strokeWidth={3} />
+                  </button>
+                </span>
+              ))}
+              <input 
+                id="tag-input"
+                type="text" 
+                value={tagInput} 
+                onChange={(e) => setTagInput(e.target.value)} 
+                onKeyDown={handleTagKeyDown}
+                className="flex-1 outline-none text-[0.95rem] min-w-[120px] bg-transparent" 
+                placeholder={formData.tags.length === 0 ? "Type tag and press Enter or Comma..." : ""} 
+              />
+            </div>
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-semibold text-slate-700 mb-2">Featured Image</label>
@@ -258,7 +299,7 @@ const BlogForm = () => {
                       
                       const result = await response.json();
                       if (response.ok) {
-                        resolve('http://localhost:5000' + result.image);
+                        resolve(baseUrl + result.image);
                       } else {
                         reject('Upload failed: ' + result.message);
                       }

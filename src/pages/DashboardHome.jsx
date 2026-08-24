@@ -19,8 +19,8 @@ import {
 } from 'recharts';
 import { toast } from 'react-toastify';
 
-// Dummy chart data
-const data = [
+// Default chart data as fallback
+const defaultChartData = [
   { name: 'May 1', value: 20 },
   { name: 'May 8', value: 45 },
   { name: 'May 15', value: 35 },
@@ -48,7 +48,8 @@ const DashboardHome = () => {
     totals: { enquiries: 0, projects: 0, blogs: 0, teamMembers: 0 },
     projectStatusCounts: { completed: 0, inProgress: 0, pending: 0 },
     recentEnquiries: [],
-    recentProjects: []
+    recentProjects: [],
+    enquiriesChartData: []
   });
   const [loading, setLoading] = useState(true);
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -159,7 +160,7 @@ const DashboardHome = () => {
           </div>
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
+              <LineChart data={stats.enquiriesChartData && stats.enquiriesChartData.length > 0 ? stats.enquiriesChartData : defaultChartData}>
                 <defs>
                   <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
