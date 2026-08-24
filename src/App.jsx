@@ -15,6 +15,8 @@ import Categories from './pages/Categories';
 import ContactUs from './pages/ContactUs';
 import Subscribers from './pages/Subscribers';
 import Settings from './pages/Settings';
+import Announcement from './pages/Announcement';
+import Reviews from './pages/Reviews';
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
             <Route path="contact-us" element={<ContactUs />} />
             <Route path="subscribers" element={<Subscribers />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="announcements" element={<Announcement />} />
+            <Route path="reviews" element={<Reviews />} />
           </Route>
         </Routes>
       </Router>

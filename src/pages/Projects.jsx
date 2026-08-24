@@ -15,6 +15,7 @@ const Projects = () => {
     imageUrl: '', 
     projectLink: '',
     status: 'In Progress',
+    category: 'Web Development',
     technologies: '' // string representation for input
   });
 
@@ -85,7 +86,7 @@ const Projects = () => {
 
   const handleAddClick = () => {
     setModalMode('add');
-    setFormData({ title: '', description: '', imageUrl: '', projectLink: '', status: 'In Progress', technologies: '' });
+    setFormData({ title: '', description: '', imageUrl: '', projectLink: '', status: 'In Progress', category: 'Web Development', technologies: '' });
     setShowForm(true);
   };
 
@@ -98,6 +99,7 @@ const Projects = () => {
       imageUrl: proj.imageUrl, 
       projectLink: proj.projectLink,
       status: proj.status || 'In Progress',
+      category: proj.category || 'Web Development',
       technologies: proj.technologies ? proj.technologies.join(', ') : ''
     });
     setShowForm(true);
@@ -202,6 +204,7 @@ const Projects = () => {
               <tr className="border-b border-slate-100 bg-slate-50/50">
                 <th className="py-5 px-6 text-sm font-semibold text-slate-700">Image</th>
                 <th className="py-5 px-6 text-sm font-semibold text-slate-700">Project Title</th>
+                <th className="py-5 px-6 text-sm font-semibold text-slate-700">Category</th>
                 <th className="py-5 px-6 text-sm font-semibold text-slate-700">Status</th>
                 <th className="py-5 px-6 text-sm font-semibold text-slate-700">Technologies</th>
                 <th className="py-5 px-6 text-sm font-semibold text-slate-700">Project Link</th>
@@ -222,6 +225,9 @@ const Projects = () => {
                     </div>
                   </td>
                   <td className="py-4 px-6 text-[0.95rem] text-slate-800 font-bold max-w-[200px] truncate">{proj.title}</td>
+                  <td className="py-4 px-6 text-[0.95rem] text-slate-600 font-medium">
+                    {proj.category || 'N/A'}
+                  </td>
                   <td className="py-4 px-6 text-[0.95rem]">
                     <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${
                       proj.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
@@ -261,7 +267,7 @@ const Projects = () => {
               ))}
               {currentEntries.length === 0 && (
                 <tr>
-                  <td colSpan="6" className="py-12 text-center text-slate-500">
+                  <td colSpan="8" className="py-12 text-center text-slate-500">
                     <p className="text-[0.95rem]">No projects found. Add your first project!</p>
                   </td>
                 </tr>
@@ -363,6 +369,15 @@ const Projects = () => {
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Technologies Used *</label>
                   <input required type="text" name="technologies" value={formData.technologies} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0ca356] focus:ring-4 focus:ring-[#0ca356]/10 transition-all text-[0.95rem]" placeholder="e.g. React, Node.js, MongoDB (comma separated)" />
                   <p className="text-xs text-slate-500 mt-1">Separate each technology with a comma</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Project Category *</label>
+                  <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0ca356] focus:ring-4 focus:ring-[#0ca356]/10 transition-all text-[0.95rem] bg-white">
+                    <option value="Web Development">Web Development</option>
+                    <option value="App Development">App Development</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 <div>

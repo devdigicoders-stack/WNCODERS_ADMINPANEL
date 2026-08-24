@@ -12,7 +12,9 @@ import {
   Bell,
   Menu,
   X,
-  LogOut
+  LogOut,
+  Megaphone,
+  Star
 } from 'lucide-react';
 
 const DashboardLayout = () => {
@@ -41,6 +43,8 @@ const DashboardLayout = () => {
       case '/dashboard/blog': return 'Blog';
       case '/dashboard/categories': return 'Categories';
       case '/dashboard/contact-us': return 'Contact Us';
+      case '/dashboard/reviews': return 'Reviews';
+      case '/dashboard/announcements': return 'Announcement';
       case '/dashboard/settings': return 'Settings';
       default: return 'Dashboard';
     }
@@ -110,6 +114,16 @@ const DashboardLayout = () => {
           <NavLink to="/dashboard/contact-us" title="Contact Us" className={navLinkClass}>
             <Mail size={20} className="shrink-0" />
             <span className={`whitespace-nowrap ${isCollapsed ? 'lg:hidden' : 'block'}`}>Contact Us</span>
+          </NavLink>
+          
+          <NavLink to="/dashboard/announcements" title="Announcement" className={navLinkClass}>
+            <Megaphone size={20} className="shrink-0" />
+            <span className={`whitespace-nowrap ${isCollapsed ? 'lg:hidden' : 'block'}`}>Announcement</span>
+          </NavLink>
+          
+          <NavLink to="/dashboard/reviews" title="Reviews" className={navLinkClass}>
+            <Star size={20} className="shrink-0" />
+            <span className={`whitespace-nowrap ${isCollapsed ? 'lg:hidden' : 'block'}`}>Reviews</span>
           </NavLink>
           
           <NavLink to="/dashboard/settings" title="Settings" className={navLinkClass}>
