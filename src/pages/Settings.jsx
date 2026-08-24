@@ -20,6 +20,7 @@ const Settings = () => {
   });
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const baseUrl = apiUrl.replace(/\/api$/, '');
 
   useEffect(() => {
     fetchProfile();
@@ -71,7 +72,7 @@ const Settings = () => {
       
       const result = await response.json();
       if (response.ok) {
-        setFormData(prev => ({ ...prev, profileImage: 'http://localhost:5000' + result.image }));
+        setFormData(prev => ({ ...prev, profileImage: baseUrl + result.image }));
         toast.success('Avatar uploaded! Click Save to apply.');
       } else {
         toast.error(result.message || 'Image upload failed');

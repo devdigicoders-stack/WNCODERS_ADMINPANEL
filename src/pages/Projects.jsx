@@ -19,6 +19,7 @@ const Projects = () => {
   });
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const baseUrl = apiUrl.replace(/\/api$/, '');
 
   const entriesPerPage = 6;
   const totalPages = Math.ceil(data.length / entriesPerPage);
@@ -71,7 +72,7 @@ const Projects = () => {
       
       const result = await response.json();
       if (response.ok) {
-        setFormData(prev => ({ ...prev, imageUrl: 'http://localhost:5000' + result.image }));
+        setFormData(prev => ({ ...prev, imageUrl: baseUrl + result.image }));
         toast.success('Image uploaded successfully!');
       } else {
         toast.error(result.message || 'Image upload failed');
