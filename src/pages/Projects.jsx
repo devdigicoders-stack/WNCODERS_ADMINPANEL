@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 
 const Projects = () => {
   const [data, setData] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showForm, setShowForm] = useState(false);
   const [modalMode, setModalMode] = useState('add'); // 'add', 'edit'
@@ -31,20 +30,7 @@ const Projects = () => {
 
   useEffect(() => {
     fetchProjects();
-    fetchCategories();
   }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/categories`);
-      if (response.ok) {
-        const result = await response.json();
-        setCategories(result);
-      }
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
 
   const fetchProjects = async () => {
     try {
@@ -100,15 +86,7 @@ const Projects = () => {
 
   const handleAddClick = () => {
     setModalMode('add');
-    setFormData({ 
-      title: '', 
-      description: '', 
-      imageUrl: '', 
-      projectLink: '', 
-      status: 'In Progress', 
-      category: categories.length > 0 ? categories[0].name : '', 
-      technologies: '' 
-    });
+    setFormData({ title: '', description: '', imageUrl: '', projectLink: '', status: 'In Progress', category: 'Web Development', technologies: '' });
     setShowForm(true);
   };
 
@@ -396,13 +374,9 @@ const Projects = () => {
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Project Category *</label>
                   <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0ca356] focus:ring-4 focus:ring-[#0ca356]/10 transition-all text-[0.95rem] bg-white">
-                    {categories.length > 0 ? (
-                      categories.map(cat => (
-                        <option key={cat._id} value={cat.name}>{cat.name}</option>
-                      ))
-                    ) : (
-                      <option value="">Loading categories...</option>
-                    )}
+                    <option value="Web Development">Web Development</option>
+                    <option value="App Development">App Development</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 
