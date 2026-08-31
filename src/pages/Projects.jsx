@@ -8,6 +8,7 @@ const Projects = () => {
   const [showForm, setShowForm] = useState(false);
   const [modalMode, setModalMode] = useState('add'); // 'add', 'edit'
   const [selectedId, setSelectedId] = useState(null);
+  const [categories, setCategories] = useState([]);
   
   const [formData, setFormData] = useState({ 
     title: '', 
@@ -15,7 +16,7 @@ const Projects = () => {
     imageUrl: '', 
     projectLink: '',
     status: 'In Progress',
-    category: 'Web Development',
+    category: '',
     technologies: '' // string representation for input
   });
 
@@ -30,7 +31,22 @@ const Projects = () => {
 
   useEffect(() => {
     fetchProjects();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/categories`);
+      if (response.ok) {
+        const result = await response.json();
+        setCategories(result);
+      } else {
+        console.error('Failed to fetch categories');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchProjects = async () => {
     try {
@@ -86,7 +102,7 @@ const Projects = () => {
 
   const handleAddClick = () => {
     setModalMode('add');
-    setFormData({ title: '', description: '', imageUrl: '', projectLink: '', status: 'In Progress', category: 'Web Development', technologies: '' });
+    setFormData({ title: '', description: '', imageUrl: '', projectLink: '', status: 'In Progress', category: categories.length > 0 ? categories[0]._id : '', technologies: '' });
     setShowForm(true);
   };
 
@@ -99,7 +115,7 @@ const Projects = () => {
       imageUrl: proj.imageUrl, 
       projectLink: proj.projectLink,
       status: proj.status || 'In Progress',
-      category: proj.category || 'Web Development',
+      category: proj.category ? (typeof proj.category === 'object' ? proj.category._id : proj.category) : (categories.length > 0 ? categories[0]._id : ''),
       technologies: proj.technologies ? proj.technologies.join(', ') : ''
     });
     setShowForm(true);
@@ -226,7 +242,7 @@ const Projects = () => {
                   </td>
                   <td className="py-4 px-6 text-[0.95rem] text-slate-800 font-bold max-w-[200px] truncate">{proj.title}</td>
                   <td className="py-4 px-6 text-[0.95rem] text-slate-600 font-medium">
-                    {proj.category || 'N/A'}
+                    {proj.category ? (typeof proj.category === 'object' ? proj.category.name : proj.category) : 'N/A'}
                   </td>
                   <td className="py-4 px-6 text-[0.95rem]">
                     <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${
@@ -374,9 +390,10 @@ const Projects = () => {
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Project Category *</label>
                   <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0ca356] focus:ring-4 focus:ring-[#0ca356]/10 transition-all text-[0.95rem] bg-white">
-                    <option value="Web Development">Web Development</option>
-                    <option value="App Development">App Development</option>
-                    <option value="Other">Other</option>
+                    <option value="" disabled>Select a category</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat._id}>{cat.name}</option>
+                    ))}
                   </select>
                 </div>
 
