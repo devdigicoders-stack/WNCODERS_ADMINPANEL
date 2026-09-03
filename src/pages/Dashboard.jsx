@@ -125,6 +125,11 @@ const DashboardLayout = () => {
             <Star size={20} className="shrink-0" />
             <span className={`whitespace-nowrap ${isCollapsed ? 'lg:hidden' : 'block'}`}>Reviews</span>
           </NavLink>
+
+          <NavLink to="/dashboard/client-logos" title="Client Logos" className={navLinkClass}>
+            <FolderKanban size={20} className="shrink-0" />
+            <span className={`whitespace-nowrap ${isCollapsed ? 'lg:hidden' : 'block'}`}>Client Logos</span>
+          </NavLink>
           
           <NavLink to="/dashboard/settings" title="Settings" className={navLinkClass}>
             <Settings size={20} className="shrink-0" />

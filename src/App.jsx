@@ -17,6 +17,7 @@ import Subscribers from './pages/Subscribers';
 import Settings from './pages/Settings';
 import Announcement from './pages/Announcement';
 import Reviews from './pages/Reviews';
+import ClientLogos from './pages/ClientLogos';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="settings" element={<Settings />} />
             <Route path="announcements" element={<Announcement />} />
             <Route path="reviews" element={<Reviews />} />
+            <Route path="client-logos" element={<ClientLogos />} />
           </Route>
         </Routes>
       </Router>
